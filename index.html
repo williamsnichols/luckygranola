@@ -89,15 +89,23 @@
   }
   .btn-ghost:hover{ background:var(--forest); color:var(--cream); transform:translateY(-3px); }
 
+  /*
+    Buy buttons: previously used flex:1 inside a fixed-width row, which forced
+    the two buttons to squeeze into equal halves. On narrow cards that made the
+    text wrap and crushed the padding/spacing. Buttons now size to their own
+    content (flex:0 0 auto) and never wrap, and the row they sit in scrolls
+    horizontally if it doesn't fit — see .buy-row below.
+  */
   .btn-buy{
-    flex:1;
-    padding:11px 14px;
+    flex:0 0 auto;
+    padding:12px 20px;
     font-size:14px;
     border-radius:999px;
     border:2px solid var(--forest);
     background:var(--cream);
     color:var(--forest);
     font-family:'Rubik',sans-serif; font-weight:600;
+    white-space:nowrap;
     transition:background .3s ease, color .3s ease, transform .3s var(--ease);
   }
   .btn-buy.primary{ background:var(--oat); border-color:var(--oat-deep); color:#fff; }
@@ -266,21 +274,31 @@
     background:var(--cream-card);
     border:2.5px solid var(--forest);
     border-radius:var(--radius-lg);
-    padding:30px 26px 26px;
+    padding:26px 26px 26px;
     box-shadow:var(--shadow);
     transition:transform .45s var(--ease), box-shadow .45s var(--ease);
     display:flex; flex-direction:column;
+    min-width:0; /* allow children to shrink/scroll instead of stretching the card */
   }
   .card:hover{ transform:translateY(-8px) rotate(-.6deg); box-shadow:var(--shadow-hover); }
 
-  .card-icon{
-    width:96px; height:96px; margin:0 auto 18px;
-    display:flex; align-items:center; justify-content:center;
-    background:var(--mint-soft); border:2.5px solid var(--forest); border-radius:50%;
+  /* Product photo, replaces the old generic icon circle */
+  .card-photo{
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:var(--radius-md);
+    border:2.5px solid var(--forest);
+    overflow:hidden;
+    margin-bottom:20px;
+    background:var(--mint-soft);
     transition:transform .5s var(--ease);
   }
-  .card:hover .card-icon{ transform:rotate(-8deg) scale(1.06); }
-  .card-icon svg{ width:56px; height:56px; }
+  .card-photo img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .card:hover .card-photo{ transform:rotate(-1deg) scale(1.02); }
 
   .card h3{ font-size:22px; text-align:center; margin-bottom:10px; }
   .card .ingredients{ font-size:14px; color:var(--forest-70); text-align:center; min-height:66px; }
@@ -289,7 +307,26 @@
     font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--oat-deep);
   }
   .card .meta span{ display:flex; align-items:center; gap:5px; }
-  .card .buy-row{ display:flex; gap:10px; margin-top:auto; }
+
+  /*
+    Buy row: allowed to overflow and scroll horizontally instead of forcing
+    both buttons into a fixed-width flex split. This keeps button padding/
+    spacing consistent at every screen size — on narrow cards you scroll the
+    row left/right instead of the buttons getting squished or wrapping.
+  */
+  .card .buy-row{
+    display:flex;
+    gap:12px;
+    margin-top:auto;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:2px 2px 8px;
+    scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch;
+  }
+  .card .buy-row::-webkit-scrollbar{ height:6px; }
+  .card .buy-row::-webkit-scrollbar-thumb{ background:var(--oat); border-radius:999px; }
+  .card .buy-row::-webkit-scrollbar-track{ background:transparent; }
 
   /* ---------- Story ---------- */
   .story-grid{
@@ -401,6 +438,9 @@
 
       <div class="flavors stagger">
         <article class="card reveal">
+          <div class="card-photo">
+            <img src="misomacadamia.png" alt="Miso macadamia nut granola" loading="lazy">
+          </div>
           <h3>miso macadamia nut</h3>
           <p class="ingredients">oats, macadamia nuts, maple syrup, olive oil, miso paste, white &amp; dark chocolate chips, dried blueberries</p>
           <div class="meta"><span>12 oz</span><span>·</span><span>Allergens: soy, tree nuts</span></div>
@@ -411,6 +451,9 @@
         </article>
 
         <article class="card reveal">
+          <div class="card-photo">
+            <img src="blacksesame.png" alt="Black sesame dark chocolate granola" loading="lazy">
+          </div>
           <h3>Black sesame dark chocolate</h3>
           <p class="ingredients">oats, hazelnuts, black sesame powder, coconut flakes, cocoa powder, maple syrup, olive oil, dark chocolate chips, dried sour cherries</p>
           <div class="meta"><span>12 oz</span><span>·</span><span>Allergens: soy, tree nuts</span></div>
@@ -421,6 +464,9 @@
         </article>
 
         <article class="card reveal">
+          <div class="card-photo">
+            <img src="ubepecanpie.png" alt="Ube pecan pie granola" loading="lazy">
+          </div>
           <h3>Ube pecan pie</h3>
           <p class="ingredients">oats, pecans, maple syrup, olive oil, white chocolate chips, dried figs, ube powder (dried ube)</p>
           <div class="meta"><span>12 oz</span><span>·</span><span>Allergens: soy, tree nuts</span></div>
